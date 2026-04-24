@@ -1,4 +1,3 @@
-
 // Get User data using Token (JWT)
 // GET /api/user/
 export const getUserData = async (req, res) => {
@@ -25,7 +24,7 @@ export const storeRecentSearchedCities = async (req, res) => {
       user.recentSearchedCities.push(recentSearchedCity);
     }
     await user.save();
-    res.json({ success: true, message: "City added" });
+    res.json({ success: true, message: 'City added' });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }

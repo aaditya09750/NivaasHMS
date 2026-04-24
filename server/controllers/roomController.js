@@ -1,6 +1,6 @@
-import Hotel from "../models/Hotel.js";
-import Room from "../models/Room.js";
-import { v2 as cloudinary } from "cloudinary";
+import Hotel from '../models/Hotel.js';
+import Room from '../models/Room.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 // API to create a new room for a hotel
 // POST /api/rooms
@@ -10,7 +10,7 @@ export const createRoom = async (req, res) => {
 
     const hotel = await Hotel.findOne({ owner: req.auth.userId });
 
-    if (!hotel) return res.json({ success: false, message: "No Hotel found" });
+    if (!hotel) return res.json({ success: false, message: 'No Hotel found' });
 
     // upload images to cloudinary
     const uploadImages = req.files.map(async (file) => {
@@ -24,12 +24,12 @@ export const createRoom = async (req, res) => {
     await Room.create({
       hotel: hotel._id,
       roomType,
-      pricePerNight: +pricePerNight,
+      pricePerNight: Number(pricePerNight),
       amenities: JSON.parse(amenities),
       images,
     });
 
-    res.json({ success: true, message: "Room created successfully" });
+    res.json({ success: true, message: 'Room created successfully' });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
@@ -43,10 +43,11 @@ export const getRooms = async (req, res) => {
       .populate({
         path: 'hotel',
         populate: {
-          path: 'owner', 
+          path: 'owner',
           select: 'image',
         },
-      }).sort({ createdAt: -1 });
+      })
+      .sort({ createdAt: -1 });
     res.json({ success: true, rooms });
   } catch (error) {
     res.json({ success: false, message: error.message });
@@ -58,11 +59,11 @@ export const getRooms = async (req, res) => {
 export const getOwnerRooms = async (req, res) => {
   try {
     const hotelData = await Hotel.findOne({ owner: req.auth.userId });
-    const rooms = await Room.find({ hotel: hotelData._id.toString() }).populate("hotel");
+    const rooms = await Room.find({ hotel: hotelData._id.toString() }).populate('hotel');
     res.json({ success: true, rooms });
   } catch (error) {
     console.log(error);
-    
+
     res.json({ success: false, message: error.message });
   }
 };
@@ -75,7 +76,7 @@ export const toggleRoomAvailability = async (req, res) => {
     const roomData = await Room.findById(roomId);
     roomData.isAvailable = !roomData.isAvailable;
     await roomData.save();
-    res.json({ success: true, message: "Room availability Updated" });
+    res.json({ success: true, message: 'Room availability Updated' });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }

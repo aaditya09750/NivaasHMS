@@ -4,8 +4,12 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "check": "npm --prefix .. run lint:server && npm --prefix .. run typecheck:server",
+    "lint": "npm --prefix .. run lint:server",
+    "lint:fix": "npm --prefix .. run lint:fix -- server",
     "server": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "typecheck": "npm --prefix .. run typecheck:server"
   },
   "keywords": [],
   "author": "",

@@ -1,12 +1,11 @@
-import transporter from "../configs/nodemailer.js";
-import Booking from "../models/Booking.js";
-import Hotel from "../models/Hotel.js";
-import Room from "../models/Room.js";
-import stripe from "stripe";
+import transporter from '../configs/nodemailer.js';
+import Booking from '../models/Booking.js';
+import Hotel from '../models/Hotel.js';
+import Room from '../models/Room.js';
+import stripe from 'stripe';
 
 // Function to Check Availablity of Room
 const checkAvailability = async ({ checkInDate, checkOutDate, room }) => {
-
   try {
     const bookings = await Booking.find({
       room,
@@ -16,7 +15,6 @@ const checkAvailability = async ({ checkInDate, checkOutDate, room }) => {
 
     const isAvailable = bookings.length === 0;
     return isAvailable;
-
   } catch (error) {
     console.error(error.message);
   }
@@ -38,7 +36,6 @@ export const checkAvailabilityAPI = async (req, res) => {
 // POST /api/bookings/book
 export const createBooking = async (req, res) => {
   try {
-
     const { room, checkInDate, checkOutDate, guests } = req.body;
 
     const user = req.user._id;
@@ -51,11 +48,11 @@ export const createBooking = async (req, res) => {
     });
 
     if (!isAvailable) {
-      return res.json({ success: false, message: "Room is not available" });
+      return res.json({ success: false, message: 'Room is not available' });
     }
 
     // Get totalPrice from Room
-    const roomData = await Room.findById(room).populate("hotel");
+    const roomData = await Room.findById(room).populate('hotel');
     let totalPrice = roomData.pricePerNight;
 
     // Calculate totalPrice based on nights
@@ -70,7 +67,7 @@ export const createBooking = async (req, res) => {
       user,
       room,
       hotel: roomData.hotel._id,
-      guests: +guests,
+      guests: Number(guests),
       checkInDate,
       checkOutDate,
       totalPrice,
@@ -98,12 +95,11 @@ export const createBooking = async (req, res) => {
 
     await transporter.sendMail(mailOptions);
 
-    res.json({ success: true, message: "Booking created successfully" });
-
+    res.json({ success: true, message: 'Booking created successfully' });
   } catch (error) {
     console.log(error);
-    
-    res.json({ success: false, message: "Failed to create booking" });
+
+    res.json({ success: false, message: 'Failed to create booking' });
   }
 };
 
@@ -112,40 +108,39 @@ export const createBooking = async (req, res) => {
 export const getUserBookings = async (req, res) => {
   try {
     const user = req.user._id;
-    const bookings = await Booking.find({ user }).populate("room hotel").sort({ createdAt: -1 });
+    const bookings = await Booking.find({ user }).populate('room hotel').sort({ createdAt: -1 });
     res.json({ success: true, bookings });
-  } catch (error) {
-    res.json({ success: false, message: "Failed to fetch bookings" });
+  } catch (_error) {
+    res.json({ success: false, message: 'Failed to fetch bookings' });
   }
 };
-
 
 export const getHotelBookings = async (req, res) => {
   try {
     const hotel = await Hotel.findOne({ owner: req.auth.userId });
     if (!hotel) {
-      return res.json({ success: false, message: "No Hotel found" });
+      return res.json({ success: false, message: 'No Hotel found' });
     }
-    const bookings = await Booking.find({ hotel: hotel._id }).populate("room hotel user").sort({ createdAt: -1 });
+    const bookings = await Booking.find({ hotel: hotel._id })
+      .populate('room hotel user')
+      .sort({ createdAt: -1 });
     // Total Bookings
     const totalBookings = bookings.length;
     // Total Revenue
     const totalRevenue = bookings.reduce((acc, booking) => acc + booking.totalPrice, 0);
 
     res.json({ success: true, dashboardData: { totalBookings, totalRevenue, bookings } });
-  } catch (error) {
-    res.json({ success: false, message: "Failed to fetch bookings" });
+  } catch (_error) {
+    res.json({ success: false, message: 'Failed to fetch bookings' });
   }
 };
 
-
 export const stripePayment = async (req, res) => {
   try {
-
     const { bookingId } = req.body;
 
     const booking = await Booking.findById(bookingId);
-    const roomData = await Room.findById(booking.room).populate("hotel");
+    const roomData = await Room.findById(booking.room).populate('hotel');
     const totalPrice = booking.totalPrice;
 
     const { origin } = req.headers;
@@ -156,7 +151,7 @@ export const stripePayment = async (req, res) => {
     const line_items = [
       {
         price_data: {
-          currency: "usd",
+          currency: 'usd',
           product_data: {
             name: roomData.hotel.name,
           },
@@ -169,7 +164,7 @@ export const stripePayment = async (req, res) => {
     // Create Checkout Session
     const session = await stripeInstance.checkout.sessions.create({
       line_items,
-      mode: "payment",
+      mode: 'payment',
       success_url: `${origin}/loader/my-bookings`,
       cancel_url: `${origin}/my-bookings`,
       metadata: {
@@ -177,8 +172,7 @@ export const stripePayment = async (req, res) => {
       },
     });
     res.json({ success: true, url: session.url });
-
-  } catch (error) {
-    res.json({ success: false, message: "Payment Failed" });
+  } catch (_error) {
+    res.json({ success: false, message: 'Payment Failed' });
   }
-}
+};

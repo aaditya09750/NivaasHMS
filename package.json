@@ -1,0 +1,47 @@
+{
+  "name": "nivaas-hms",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root tooling orchestrator for the NivaasHMS client and server packages.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "lint": "eslint client server --max-warnings=0",
+    "lint:fix": "eslint client server --fix",
+    "lint:client": "eslint client --max-warnings=0",
+    "lint:server": "eslint server --max-warnings=0",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "typecheck": "npm run typecheck:server && npm run typecheck:client",
+    "typecheck:server": "node --check server/server.js",
+    "typecheck:client": "npm --prefix client run build",
+    "build": "npm --prefix client run build",
+    "docs:lint": "markdownlint \"**/*.md\" --ignore node_modules",
+    "docs:links": "markdown-link-check README.md ARCHITECTURE.md CONTRIBUTING.md docs/API.md docs/SETUP.md",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm run docs:lint"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@eslint/js": "^9.39.4",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import-x": "^4.16.2",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-n": "^17.24.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "markdown-link-check": "^3.14.2",
+    "markdownlint-cli": "^0.48.0",
+    "prettier": "^3.8.3"
+  }
+}

@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import {  useParams } from "react-router-dom";
-import { useAppContext } from "../context/AppContext";
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
 
 const Loader = () => {
   const { navigate } = useAppContext();
@@ -9,11 +9,13 @@ const Loader = () => {
 
   useEffect(() => {
     if (nextUrl) {
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         navigate(`/${nextUrl}`);
       }, 8000);
+
+      return () => clearTimeout(timeoutId);
     }
-  }, [nextUrl]);
+  }, [navigate, nextUrl]);
 
   return (
     <div className="flex justify-center items-center h-screen">
