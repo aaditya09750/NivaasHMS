@@ -24,14 +24,12 @@ Generic CMS and marketplace templates often hide the real booking workflow behin
 
 ## Live Demo / Screenshots
 
-<!-- TODO: Add deployed client URL, deployed API health URL, and screenshots/GIFs. -->
+<!-- TODO: Add screenshots/GIFs of the guest booking and owner dashboard flows. -->
 
-| Item                        | Status |
-| --------------------------- | ------ |
-| Live client                 | TODO   |
-| API health check            | TODO   |
-| Guest booking screenshots   | TODO   |
-| Owner dashboard screenshots | TODO   |
+| Item             | Link / Status                                                 |
+| ---------------- | ------------------------------------------------------------- |
+| Live Frontend    | [nivaas-hms-ui.vercel.app](https://nivaas-hms-ui.vercel.app/) |
+| API health check | [nivaas-hms.vercel.app](https://nivaas-hms.vercel.app/)       |
 
 ## Core Features
 
