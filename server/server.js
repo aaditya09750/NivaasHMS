@@ -15,7 +15,14 @@ connectDB();
 connectCloudinary();
 
 const app = express();
-app.use(cors()); // Enable Cross-Origin Resource Sharing
+
+// CORS: if CLIENT_URL is set, restrict to that comma-separated allowlist.
+// Otherwise fall back to a permissive policy for local development.
+const allowedOrigins = process.env.CLIENT_URL?.split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(cors(allowedOrigins?.length ? { origin: allowedOrigins } : undefined));
 
 // API to listen to Stripe Webhooks
 app.post('/api/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
