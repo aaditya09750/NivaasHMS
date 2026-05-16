@@ -20,8 +20,8 @@ const Logo = ({ className = '' }) => (
       y="29"
       fill="white"
       fontFamily="Poppins, sans-serif"
-      fontSize="22"
-      fontWeight="700"
+      fontSize="25"
+      fontWeight="600"
       letterSpacing="-0.3"
     >
       NivaasHMS
